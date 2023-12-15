@@ -1,5 +1,5 @@
 // const input = await Deno.readTextFile('./input.txt');
-const testInput = await Deno.readTextFile('./smallTestInput.txt');
+const testInput = await Deno.readTextFile('./testInput.txt');
 
 const letterNumbers = [
   'zero',
@@ -10,7 +10,7 @@ const letterNumbers = [
   'five',
   'six',
   'seven',
-  'eigth',
+  'eight',
   'nine',
 ];
 const mapLetterToNumbers = {
@@ -31,26 +31,30 @@ const inputArr = testInput.split('\n');
 
 const calibrationValues = inputArr.map((input) => {
   const characterArray = input.split('');
-  const numbers = characterArray.map((character, index) => {
-    if (isNaN(parseInt(character))) {
-      let numberToReturn;
-      let string = '';
-      for (let i = index; i < characterArray.length; i++) {
-        if (!isNaN(parseInt(characterArray[i]))) {
-          break;
+  const numbers = characterArray
+    .map((character, characterIndex) => {
+      if (isNaN(parseInt(character))) {
+        let numberToReturn;
+        let string = '';
+
+        for (let i = characterIndex; i < characterArray.length; i++) {
+          if (!isNaN(parseInt(characterArray[i]))) {
+            break;
+          }
+          string += characterArray[i];
         }
-        string += characterArray[i];
+
+        letterNumbers.forEach((number) => {
+          if (string.includes(number)) {
+            numberToReturn = mapLetterToNumbers[number];
+          }
+        });
+        return numberToReturn;
+      } else {
+        return parseInt(character);
       }
-      letterNumbers.forEach((number) => {
-        if (string.includes(number)) {
-          numberToReturn = mapLetterToNumbers[number];
-        }
-      });
-      return numberToReturn;
-    } else {
-      return parseInt(character);
-    }
-  });
+    })
+    .filter(Boolean);
   console.log(numbers);
   const firstNumber = numbers[0];
   const lastNumber = numbers[numbers.length - 1];
